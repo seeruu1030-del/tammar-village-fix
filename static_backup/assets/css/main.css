@@ -1,0 +1,130 @@
+/* Custom Scrollbar for sleek Apex look */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+/* Dropdown transition */
+.submenu-transition {
+    transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
+}
+
+/* Sidebar Mini State Helpers */
+.sidebar-collapsed .sidebar-label,
+.sidebar-collapsed .logo-text,
+.sidebar-collapsed .footer-text {
+    display: none;
+    opacity: 0;
+}
+
+.sidebar-collapsed .nav-text {
+    display: none;
+}
+
+.sidebar-collapsed aside [id^="dropdown-"] {
+    display: none !important;
+}
+
+.sidebar-collapsed aside {
+    width: 5rem !important; /* w-20 */
+}
+
+.sidebar-collapsed aside .fa-chevron-down {
+    display: none;
+}
+
+.sidebar-collapsed aside .px-6,
+.sidebar-collapsed aside .px-3 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    justify-content: center;
+}
+
+.sidebar-collapsed aside a {
+    justify-content: center;
+}
+
+/* Print Styles for ID Cards */
+@media print {
+    body * { visibility: hidden; }
+    #print-section, #print-section * { visibility: visible; }
+    #print-section { 
+        position: absolute; 
+        left: 0; 
+        top: 0; 
+        width: 100%; 
+        display: flex !important;
+        flex-wrap: wrap;
+        gap: 30px; /* Jarak antar kartu lebih konsisten */
+        padding: 30px;
+        background: white;
+        justify-content: center;
+    }
+    
+    .print-card {
+        page-break-inside: avoid;
+        break-inside: avoid;
+        margin: 0; /* Hapus margin karena sudah menggunakan gap */
+        display: block !important;
+        width: 85.6mm;
+        height: 54mm;
+        border-radius: 12px;
+        overflow: hidden;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        position: relative;
+        border: 1px solid #e2e8f0; /* Tambahkan border halus untuk panduan potong */
+    }
+
+    /* Memastikan teks putih tetap putih saat diprint */
+    .print-card * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
+/* Custom Responsive Utilities */
+.responsive-table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 640px) {
+    .hide-on-mobile { display: none !important; }
+    .text-adaptive-xs { font-size: 0.65rem; }
+}
+
+/* BNI Branding (portal-bank.html) */
+.bni-orange { background-color: #E55300; }
+.bni-teal { background-color: #005E6A; }
+.text-bni-orange { color: #E55300; }
+.text-bni-teal { color: #005E6A; }
+.border-bni-teal { border-color: #005E6A; }
+
+/* Emergency Animations (portal-keamanan.html) */
+.emergency-glow {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+    animation: pulse-red 2s infinite;
+}
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* Login Page Branding (login.html) */
+.login-branding {
+    background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), 
+                      url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+    background-size: cover;
+    background-position: center;
+}
+.accent-glow {
+    box-shadow: 0 0 50px -12px rgba(14, 165, 233, 0.5);
+}
