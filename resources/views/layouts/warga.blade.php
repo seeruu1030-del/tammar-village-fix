@@ -206,8 +206,8 @@
     @yield('modals')
 
     <!-- Scripts -->
-    <script src="{{ asset('assets/js/navigation.js') }}"></script>
-    <script src="{{ asset('assets/js/warga.js') }}"></script>
+    <script src="{{ asset('assets/js/navigation.js') }}?v={{ filemtime(public_path('assets/js/navigation.js')) }}"></script>
+    <script src="{{ asset('assets/js/warga.js') }}?v={{ filemtime(public_path('assets/js/warga.js')) }}"></script>
     <!-- Midtrans Snap JS -->
     <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
     

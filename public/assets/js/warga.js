@@ -137,7 +137,8 @@ function switchProfileTab(tabId) {
 }
 
 // MODAL FUNCTIONS
-function openAddSetoranModal() {
+function openAddSetoranModal(progId = null, progName = null) {
+    if (progId) document.getElementById('savings-prog-id').value = progId;
     const modal = document.getElementById('modal-tambah-setoran');
     if (modal) modal.classList.remove('hidden');
 }
@@ -145,6 +146,76 @@ function openAddSetoranModal() {
 function closeAddSetoranModal() {
     const modal = document.getElementById('modal-tambah-setoran');
     if (modal) modal.classList.add('hidden');
+}
+
+// IURAN & PAYMENT MODAL LOGIC
+function openPaymentModal() {
+    const checkboxes = document.querySelectorAll('.invoice-checkbox:checked');
+    if (checkboxes.length === 0) {
+        alert('Silakan pilih minimal satu tagihan untuk dibayar.');
+        return;
+    }
+
+    const container = document.getElementById('selected-invoices-container');
+    const totalAmountElem = document.getElementById('modal-total-amount');
+    const totalCountElem = document.getElementById('modal-total-count');
+    
+    if (!container || !totalAmountElem || !totalCountElem) return;
+
+    container.innerHTML = '';
+    let total = 0;
+
+    checkboxes.forEach(cb => {
+        const id = cb.value;
+        const amount = parseInt(cb.dataset.amount);
+        total += amount;
+
+        // Add hidden input for each selected invoice
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'invoice_ids[]';
+        input.value = id;
+        container.appendChild(input);
+    });
+
+    totalAmountElem.innerText = 'Rp ' + total.toLocaleString('id-ID');
+    totalCountElem.innerText = checkboxes.length + ' Bulan';
+
+    const modal = document.getElementById('modal-bayar-iuran');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closePaymentModal() {
+    const modal = document.getElementById('modal-bayar-iuran');
+    if (modal) modal.classList.add('hidden');
+}
+
+function updateInvoiceSelection() {
+    const checkboxes = document.querySelectorAll('.invoice-checkbox:checked');
+    const count = checkboxes.length;
+    let total = 0;
+
+    checkboxes.forEach(cb => {
+        total += parseInt(cb.dataset.amount);
+    });
+
+    const summaryCount = document.getElementById('summary-count');
+    const summaryTotal = document.getElementById('summary-total');
+    const selectionSummary = document.getElementById('selection-summary');
+    const btnPayNow = document.getElementById('btn-pay-now');
+    const selectedCount = document.getElementById('selected-count');
+
+    if (summaryCount) summaryCount.innerText = count + ' Bulan';
+    if (summaryTotal) summaryTotal.innerText = 'Rp ' + total.toLocaleString('id-ID');
+    if (selectedCount) selectedCount.innerText = count;
+
+    if (count > 0) {
+        if (selectionSummary) selectionSummary.classList.remove('hidden');
+        if (btnPayNow) btnPayNow.classList.remove('hidden');
+    } else {
+        if (selectionSummary) selectionSummary.classList.add('hidden');
+        if (btnPayNow) btnPayNow.classList.add('hidden');
+    }
 }
 
 function openEditProfileModal() {
@@ -179,4 +250,31 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         switchWargaView('dashboard');
     }
+
+    // Invoice Selection Listeners
+    const selectAll = document.getElementById('select-all-invoices');
+    const invoiceCheckboxes = document.querySelectorAll('.invoice-checkbox');
+    
+    if (selectAll) {
+        selectAll.addEventListener('change', function() {
+            invoiceCheckboxes.forEach(cb => {
+                cb.checked = selectAll.checked;
+            });
+            updateInvoiceSelection();
+        });
+    }
+
+    invoiceCheckboxes.forEach(cb => {
+        cb.addEventListener('change', function() {
+            updateInvoiceSelection();
+            
+            // Update select-all state
+            if (selectAll) {
+                const allChecked = Array.from(invoiceCheckboxes).every(c => c.checked);
+                const someChecked = Array.from(invoiceCheckboxes).some(c => c.checked);
+                selectAll.checked = allChecked;
+                selectAll.indeterminate = someChecked && !allChecked;
+            }
+        });
+    });
 });
