@@ -18,7 +18,9 @@ class SettingsController extends Controller
             ->where('id', '!=', $user->id)
             ->get();
             
-        return view('admin.settings.index', compact('user', 'staffs'));
+        $settings = \App\Models\Setting::pluck('value', 'key');
+            
+        return view('admin.settings.index', compact('user', 'staffs', 'settings'));
     }
 
     public function updateProfile(Request $request)
@@ -78,8 +80,18 @@ class SettingsController extends Controller
 
     public function updateFinance(Request $request)
     {
-        // Placeholder for finance settings
-        // In a real app, you might save these to a 'settings' table
+        $request->validate([
+            'security_fee' => 'required|numeric',
+            'waste_fee' => 'required|numeric',
+            'bank_name' => 'required|string',
+            'bank_account_number' => 'required|string',
+        ]);
+
+        \App\Models\Setting::set('security_fee', $request->security_fee);
+        \App\Models\Setting::set('waste_fee', $request->waste_fee);
+        \App\Models\Setting::set('bank_name', $request->bank_name);
+        \App\Models\Setting::set('bank_account_number', $request->bank_account_number);
+
         return redirect()->back()->with('success', 'Konfigurasi keuangan berhasil disimpan');
     }
 }

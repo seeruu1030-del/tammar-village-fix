@@ -53,24 +53,15 @@
             <h3 class="font-black text-slate-800 text-lg group-hover:text-amber-600 transition-colors">{{ $program->name }}</h3>
             <p class="text-xs text-slate-500 mt-1 leading-relaxed">{{ $program->description ?? 'Tidak ada deskripsi program.' }}</p>
             
-            <div class="my-6">
-                <div class="flex justify-between text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1.5">
-                    <span>Terkumpul: Rp {{ number_format($program->collected_amount, 0, ',', '.') }}</span>
-                    <span class="text-slate-800">{{ $program->progress_percentage }}%</span>
-                </div>
-                <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden shadow-inner">
-                    <div class="bg-gradient-to-r from-amber-400 to-amber-600 h-2 rounded-full transition-all duration-1000" style="width: {{ $program->progress_percentage }}%"></div>
-                </div>
-                <p class="text-[9px] text-slate-400 font-bold mt-2 uppercase tracking-tighter">Target Program: Rp {{ number_format($program->target_amount, 0, ',', '.') }}</p>
+            <div class="my-6 py-4 bg-slate-50 rounded-xl border border-slate-100 flex flex-col items-center justify-center">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Dana Terkumpul</p>
+                <h4 class="text-xl font-black text-emerald-600">Rp {{ number_format($program->collected_amount, 0, ',', '.') }}</h4>
             </div>
         </div>
         <div class="border-t border-slate-50 pt-4 flex justify-between items-center">
             <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                 <i class="fa-solid fa-users mr-1 text-slate-300"></i> 
-                {{ $program->participants_count }}{{ $program->is_unlimited ? '' : '/' . $program->max_participants }} Penabung
-                @if($program->is_full)
-                    <span class="ml-1 text-rose-500">[PENUH]</span>
-                @endif
+                {{ $program->participants_count }} Penabung
             </span>
             <div class="flex gap-2">
                 <button onclick="openEditProgramModal({{ $program->id }})" class="w-8 h-8 rounded-lg text-slate-400 hover:text-sky-500 hover:bg-sky-50 transition-all flex items-center justify-center">
@@ -131,14 +122,10 @@
                     <input type="text" name="name" id="prog-name" required placeholder="Contoh: Tabungan Kurban 2027" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 focus:border-amber-500 focus:bg-white focus:ring-4 focus:ring-amber-500/10 outline-none transition-all">
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="group">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 group-focus-within:text-amber-500 transition-colors">Target Dana (Rp)</label>
                         <input type="number" name="target_amount" id="prog-target" required min="0" placeholder="50000000" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 focus:border-amber-500 focus:bg-white focus:ring-4 focus:ring-amber-500/10 outline-none transition-all">
-                    </div>
-                    <div class="group">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 group-focus-within:text-amber-500 transition-colors">Batas Penabung</label>
-                        <input type="number" name="max_participants" id="prog-max" required min="0" placeholder="0 = Tak Terbatas" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold text-slate-800 focus:border-amber-500 focus:bg-white focus:ring-4 focus:ring-amber-500/10 outline-none transition-all">
                     </div>
                     <div class="group">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 group-focus-within:text-amber-500 transition-colors">Batas Waktu</label>
@@ -186,7 +173,6 @@
                 document.getElementById('prog-name').value = data.name;
                 document.getElementById('prog-status').value = data.status;
                 document.getElementById('prog-target').value = Math.round(data.target_amount);
-                document.getElementById('prog-max').value = data.max_participants || 0;
                 document.getElementById('prog-end-date').value = data.end_date || '';
                 document.getElementById('prog-desc').value = data.description || '';
                 document.getElementById('form-program').action = `/admin/savings-programs/${id}`;

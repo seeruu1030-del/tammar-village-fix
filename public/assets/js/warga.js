@@ -122,5 +122,24 @@ function closeEditProfileModal() {
 
 // INITIALIZATION
 document.addEventListener('DOMContentLoaded', () => {
-    switchWargaView('dashboard');
+    // Check for hash in URL for specific view or tab redirect
+    const hash = window.location.hash;
+    
+    if (hash && hash.startsWith('#view-')) {
+        const urlParams = new URLSearchParams(hash.split('?')[1] || '');
+        const tab = urlParams.get('tab');
+        
+        // Remove query params from hash for view ID
+        const viewId = hash.split('?')[0].replace('#view-', '');
+        
+        switchWargaView(viewId);
+        
+        if (viewId === 'profil' && tab) {
+            switchProfileTab(tab);
+        } else if (viewId === 'profil') {
+            switchProfileTab('personal');
+        }
+    } else {
+        switchWargaView('dashboard');
+    }
 });

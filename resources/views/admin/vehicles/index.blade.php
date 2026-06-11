@@ -88,14 +88,18 @@
         <div class="p-6">
             <form id="form-tambah-kendaraan" action="{{ route('admin.vehicles.store') }}" method="POST" class="space-y-4">
                 @csrf
-                <div>
+                <div class="relative" id="resident-search-container">
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Pemilik Kendaraan (Warga) <span class="text-rose-500">*</span></label>
-                    <select name="resident_id" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-sky-500 outline-none">
-                        <option value="">Pilih Warga</option>
+                    <input type="hidden" name="resident_id" id="resident_id_input" required>
+                    <input type="text" id="resident_search_input" placeholder="Ketik nama warga untuk mencari..." class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-sky-500 outline-none" autocomplete="off" onfocus="document.getElementById('resident_dropdown').classList.remove('hidden')" onkeyup="filterResidents()">
+                    <div id="resident_dropdown" class="hidden absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
                         @foreach($residents as $resident)
-                        <option value="{{ $resident->id }}">{{ $resident->name }} (Blok {{ $resident->block->name }} / {{ $resident->unit_no }})</option>
+                        <div class="px-3 py-2 hover:bg-slate-50 cursor-pointer text-sm border-b border-slate-50 resident-option" data-id="{{ $resident->id }}" data-name="{{ strtolower($resident->name) }}" onclick="selectResident({{ $resident->id }}, '{{ addslashes($resident->name) }}')">
+                            <div class="font-semibold text-slate-800">{{ $resident->name }}</div>
+                            <div class="text-[10px] text-slate-500">Blok {{ $resident->block->name }} / {{ $resident->unit_no }}</div>
+                        </div>
                         @endforeach
-                    </select>
+                    </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
@@ -206,9 +210,40 @@
             });
     }
 
+    // Custom Searchable Dropdown Logic
+    function filterResidents() {
+        const input = document.getElementById('resident_search_input');
+        const filter = input.value.toLowerCase();
+        const dropdown = document.getElementById('resident_dropdown');
+        const options = dropdown.getElementsByClassName('resident-option');
+        
+        dropdown.classList.remove('hidden');
+
+        for (let i = 0; i < options.length; i++) {
+            const name = options[i].getAttribute('data-name');
+            if (name.indexOf(filter) > -1) {
+                options[i].style.display = "";
+            } else {
+                options[i].style.display = "none";
+            }
+        }
+    }
+
+    function selectResident(id, name) {
+        document.getElementById('resident_id_input').value = id;
+        document.getElementById('resident_search_input').value = name;
+        document.getElementById('resident_dropdown').classList.add('hidden');
+    }
+
     window.onclick = function(event) {
+        // Close modal when clicking outside
         if (event.target.classList.contains('fixed') && event.target.id.includes('modal')) {
             toggleModal(event.target.id, false);
+        }
+
+        // Close dropdown when clicking outside
+        if (!event.target.closest('#resident-search-container')) {
+            document.getElementById('resident_dropdown')?.classList.add('hidden');
         }
     }
 </script>

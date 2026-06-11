@@ -15,12 +15,12 @@ class SavingsProgramController extends Controller
         $programs = SavingsProgram::all();
         
         // Count unique active savers across all programs
-        $totalActiveSavers = SavingsTransaction::where('status', 'completed')
+        $totalActiveSavers = SavingsTransaction::where('status', 'success')
             ->distinct('resident_id')
             ->count('resident_id');
 
         // Calculate average deposit per transaction
-        $avgDeposit = SavingsTransaction::where('status', 'completed')
+        $avgDeposit = SavingsTransaction::where('status', 'success')
             ->avg('amount') ?? 0;
 
         $stats = [
@@ -44,7 +44,7 @@ class SavingsProgramController extends Controller
         
         // Get participants grouped by resident with their total savings
         $participants = SavingsTransaction::where('savings_program_id', $id)
-            ->where('status', 'completed')
+            ->where('status', 'success')
             ->with(['resident.block'])
             ->select('resident_id', DB::raw('SUM(amount) as total_saved'), DB::raw('MAX(transaction_date) as last_deposit'))
             ->groupBy('resident_id')
@@ -60,7 +60,6 @@ class SavingsProgramController extends Controller
             'name' => 'required',
             'description' => 'nullable',
             'target_amount' => 'required|numeric|min:0',
-            'max_participants' => 'required|integer|min:0',
             'status' => 'required|in:active,locked,completed',
             'end_date' => 'nullable|date',
         ]);
@@ -77,7 +76,6 @@ class SavingsProgramController extends Controller
             'name' => 'required',
             'description' => 'nullable',
             'target_amount' => 'required|numeric|min:0',
-            'max_participants' => 'required|integer|min:0',
             'status' => 'required|in:active,locked,completed',
             'end_date' => 'nullable|date',
         ]);

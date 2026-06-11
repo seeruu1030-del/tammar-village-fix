@@ -10,10 +10,10 @@ class SavingsProgram extends Model
     use HasFactory;
 
     protected $fillable = [
-        'program_id', 'name', 'description', 'target_amount', 'max_participants', 'collected_amount', 'status', 'end_date'
+        'program_id', 'name', 'description', 'target_amount', 'collected_amount', 'status', 'end_date'
     ];
 
-    protected $appends = ['progress_percentage', 'is_full', 'is_unlimited'];
+    protected $appends = ['progress_percentage'];
 
     public function transactions()
     {
@@ -22,18 +22,7 @@ class SavingsProgram extends Model
 
     public function getParticipantsCountAttribute()
     {
-        return $this->transactions()->distinct('resident_id')->count('resident_id');
-    }
-
-    public function getIsFullAttribute()
-    {
-        if ($this->max_participants <= 0) return false;
-        return $this->participants_count >= $this->max_participants;
-    }
-
-    public function getIsUnlimitedAttribute()
-    {
-        return $this->max_participants <= 0;
+        return $this->transactions()->where('status', 'success')->distinct('resident_id')->count('resident_id');
     }
 
     public function getProgressPercentageAttribute()

@@ -63,4 +63,9 @@ class Resident extends Model
     {
         return $this->hasMany(Invoice::class);
     }
+
+    public function documents()
+    {
+        return $this->hasMany(ResidentDocument::class);
+    }
 }

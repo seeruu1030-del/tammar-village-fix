@@ -12,7 +12,8 @@ class VehicleController extends Controller
     public function index()
     {
         $vehicles = Vehicle::with('resident.block')->latest()->get();
-        $residents = Resident::orderBy('name')->get();
+        // Only fetch active residents for the selection dropdown
+        $residents = Resident::where('status', 'active')->orderBy('name')->get();
         return view('admin.vehicles.index', compact('vehicles', 'residents'));
     }
 

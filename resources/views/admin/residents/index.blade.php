@@ -84,9 +84,20 @@
                         <span class="bg-blue-50 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-md">{{ $resident->housing_status }}</span>
                     </td>
                     <td class="py-3 px-4">
-                        <span class="flex items-center gap-1.5 text-emerald-600 text-xs font-medium">
-                            <i class="fa-solid fa-circle text-[8px]"></i> {{ ucfirst($resident->status) }}
-                        </span>
+                        <div class="flex flex-col gap-1">
+                            <span class="flex items-center gap-1.5 text-emerald-600 text-[10px] font-bold uppercase tracking-tight">
+                                <i class="fa-solid fa-circle text-[6px]"></i> {{ $resident->status }}
+                            </span>
+                            @if($resident->user_id)
+                                <span class="flex items-center gap-1 text-sky-600 text-[9px] font-medium bg-sky-50 px-1.5 py-0.5 rounded border border-sky-100 w-fit" title="{{ $resident->user->email }}">
+                                    <i class="fa-solid fa-user-check"></i> Akun Aktif
+                                </span>
+                            @else
+                                <span class="flex items-center gap-1 text-slate-400 text-[9px] font-medium bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100 w-fit">
+                                    <i class="fa-solid fa-user-slash"></i> Belum Ada Akun
+                                </span>
+                            @endif
+                        </div>
                     </td>
                     <td class="py-3 px-4 text-center">
                         <button onclick="openEditWargaModal({{ $resident->id }})" class="text-slate-400 hover:text-sky-500 p-1 transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -168,26 +179,24 @@
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-500 mb-1">NIK (16 Digit) <span class="text-rose-500">*</span></label>
-                        <input type="text" name="nik" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-sky-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">Tempat Lahir</label>
-                        <input type="text" name="birth_place" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-sky-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">Tanggal Lahir</label>
-                        <input type="date" name="birth_date" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-sky-500 outline-none">
+                        <input type="text" name="nik" id="add-nik" onkeyup="updateGeneratedPassword()" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-sky-500 outline-none" maxlength="16">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-500 mb-1">Nomor WhatsApp <span class="text-rose-500">*</span></label>
                         <input type="tel" name="contact" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-sky-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">Email Aktif</label>
-                        <input type="email" name="email" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-sky-500 outline-none">
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Password Akun Login (Auto-Generate)</label>
+                        <input type="text" id="add-generated-password" readonly class="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-600 outline-none cursor-not-allowed font-mono" placeholder="Ketik NIK terlebih dahulu...">
                     </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-100 pt-4">
+                
+                <div class="p-3 bg-sky-50 rounded-xl border border-sky-100 flex gap-3 mt-4">
+                    <i class="fa-solid fa-circle-info text-sky-500 mt-0.5"></i>
+                    <p class="text-[11px] text-sky-800 leading-relaxed">Sistem akan otomatis membuatkan akun login menggunakan <b>NIK</b> sebagai Username. Kata sandi (password) akan di-generate otomatis dan ditampilkan setelah data disimpan.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-100 pt-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-500 mb-1">Blok <span class="text-rose-500">*</span></label>
                         <select name="block_id" id="add-block-id" required onchange="loadAvailableUnits(this.value, 'add-unit-no')" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-sky-500 outline-none">
@@ -203,26 +212,19 @@
                             <option value="">Pilih Blok Dulu</option>
                         </select>
                     </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="hidden">
+                        <input type="hidden" name="family_status" value="KK">
+                    </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">Status Keluarga <span class="text-rose-500">*</span></label>
-                        <select name="family_status" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-sky-500 outline-none">
-                            <option value="KK">Kepala Keluarga</option>
-                            <option value="Istri">Istri</option>
-                            <option value="Anak">Anak</option>
-                            <option value="Lainnya">Lainnya</option>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Status Hunian <span class="text-rose-500">*</span></label>
+                        <select name="housing_status" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-sky-500 outline-none">
+                            <option value="Owner">Pemilik (Owner)</option>
+                            <option value="Tenant">Penyewa (Tenant)</option>
                         </select>
                     </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Status Hunian <span class="text-rose-500">*</span></label>
-                    <select name="housing_status" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-sky-500 outline-none">
-                        <option value="Owner">Pemilik (Owner)</option>
-                        <option value="Tenant">Penyewa (Tenant)</option>
-                    </select>
-                </div>
-                <div class="border-t border-slate-100 pt-4">
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Unggah Dokumen KTP/KK</label>
-                    <input type="file" name="document" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100">
                 </div>
             </form>
         </div>
@@ -295,6 +297,10 @@
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-bold text-slate-500 uppercase">Email Aktif</label>
                             <input type="email" name="email" id="edit-email" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase">Password Akun Baru</label>
+                            <input type="password" name="password" id="edit-password" placeholder="Kosongkan jika tidak ingin mengubah" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
                         </div>
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-bold text-slate-500 uppercase">ID Telegram</label>
@@ -896,6 +902,17 @@
                 renderFamilyList(data.family_members);
                 renderVehicleList(data.vehicles);
             });
+    }
+
+    function updateGeneratedPassword() {
+        const nikInput = document.getElementById('add-nik').value;
+        const passOutput = document.getElementById('add-generated-password');
+        
+        if (nikInput.length >= 4) {
+            passOutput.value = 'tamar' + nikInput.slice(-4);
+        } else {
+            passOutput.value = '';
+        }
     }
 
     window.onclick = function(event) {

@@ -34,15 +34,9 @@
             </div>
 
             <div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Progres Dana</p>
-                <div class="flex justify-between text-xs font-bold mb-1.5">
-                    <span class="text-slate-600">Rp {{ number_format($program->collected_amount, 0, ',', '.') }}</span>
-                    <span class="text-amber-600">{{ $program->progress_percentage }}%</span>
-                </div>
-                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div class="bg-amber-500 h-full rounded-full" style="width: {{ $program->progress_percentage }}%"></div>
-                </div>
-                <p class="text-[10px] text-slate-400 mt-2">Target: Rp {{ number_format($program->target_amount, 0, ',', '.') }}</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Dana Terkumpul</p>
+                <h4 class="text-xl font-black text-emerald-600">Rp {{ number_format($program->collected_amount, 0, ',', '.') }}</h4>
+                <p class="text-[10px] text-slate-400 mt-1 font-bold italic">Target Global: Rp {{ number_format($program->target_amount, 0, ',', '.') }}</p>
             </div>
 
             <div class="pt-4 border-t border-slate-50">
@@ -64,6 +58,7 @@
                     <thead>
                         <tr class="bg-white text-slate-500 font-semibold border-b border-slate-100">
                             <th class="py-4 px-6">Warga / Unit</th>
+                            <th class="py-4 px-6 text-center w-40">Progress</th>
                             <th class="py-4 px-6">Setoran Terakhir</th>
                             <th class="py-4 px-6">Total Tabungan</th>
                             <th class="py-4 px-6 text-center">Status</th>
@@ -71,6 +66,10 @@
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         @forelse($participants as $p)
+                        @php
+                            $target = $program->target_amount;
+                            $percentage = $target > 0 ? round(min(($p->total_saved / $target) * 100, 100), 1) : 0;
+                        @endphp
                         <tr class="hover:bg-slate-50/50 transition-colors">
                             <td class="py-4 px-6">
                                 <div class="flex items-center gap-3">
@@ -79,6 +78,14 @@
                                         <p class="font-bold text-slate-800 leading-none">{{ $p->resident->name }}</p>
                                         <p class="text-[10px] text-slate-400 mt-1 uppercase font-black">Blok {{ $p->resident->block->name }} / {{ $p->resident->unit_no }}</p>
                                     </div>
+                                </div>
+                            </td>
+                            <td class="py-4 px-6">
+                                <div class="flex items-center gap-2">
+                                    <div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-emerald-500 rounded-full" style="width: {{ $percentage }}%"></div>
+                                    </div>
+                                    <span class="text-[10px] font-black text-slate-600">{{ $percentage }}%</span>
                                 </div>
                             </td>
                             <td class="py-4 px-6">

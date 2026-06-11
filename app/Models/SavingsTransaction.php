@@ -11,7 +11,8 @@ class SavingsTransaction extends Model
 
     protected $fillable = [
         'resident_id', 'savings_program_id', 'amount', 'transaction_date', 
-        'type', 'method', 'reference_no', 'status', 'note', 'proof_path'
+        'type', 'payment_method', 'midtrans_order_id', 'midtrans_snap_token',
+        'reference_no', 'status', 'note', 'proof_path'
     ];
 
     protected $casts = [

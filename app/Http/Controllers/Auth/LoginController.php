@@ -15,12 +15,15 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'username' => ['required'],
+        $input = $request->validate([
+            'login' => ['required'],
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        // Support login via email or username (which stores NIK for Warga)
+        $fieldType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        if (Auth::attempt([$fieldType => $input['login'], 'password' => $input['password']], $request->boolean('remember'))) {
             $request->session()->regenerate();
 
             $user = Auth::user();
@@ -35,8 +38,8 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'username' => 'Kredensial yang diberikan tidak cocok dengan data kami.',
-        ])->onlyInput('username');
+            'login' => 'Kredensial yang diberikan tidak cocok dengan data kami.',
+        ])->onlyInput('login');
     }
 
     public function logout(Request $request)

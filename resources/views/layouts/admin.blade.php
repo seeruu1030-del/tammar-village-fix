@@ -53,12 +53,11 @@
                         <i class="fa-solid fa-circle-dot text-[6px]"></i>
                         <span class="nav-text">Direktori Warga</span>
                     </a>
-                    <a href="{{ route('admin.under_construction') }}" class="flex items-center gap-3 pl-11 pr-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-800 rounded-md transition-colors justify-between">
+                    <a href="{{ route('admin.residents.pending') }}" class="flex items-center gap-3 pl-11 pr-3 py-2 text-sm {{ Request::is('admin/residents/pending') ? 'text-white bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800' }} rounded-md transition-colors justify-between">
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-circle-dot text-[6px]"></i>
                             <span class="nav-text">Persetujuan Baru</span>
                         </div>
-                        <span class="bg-rose-500 text-[9px] text-white px-1.5 py-0.5 rounded font-bold nav-text">1</span>
                     </a>
                     <a href="{{ url('/admin/vehicles') }}" class="flex items-center gap-3 pl-11 pr-3 py-2 text-sm {{ Request::is('admin/vehicles') ? 'text-white bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800' }} rounded-md transition-colors">
                         <i class="fa-solid fa-circle-dot text-[6px]"></i>
@@ -106,11 +105,11 @@
                         <i class="fa-solid fa-circle-dot text-[6px]"></i>
                         <span class="nav-text">Dashboard Keuangan</span>
                     </a>
-                    <a href="{{ route('admin.under_construction') }}" class="flex items-center gap-3 pl-11 pr-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-800 rounded-md transition-colors">
+                    <a href="{{ route('admin.finance.index') }}" class="flex items-center gap-3 pl-11 pr-3 py-2 text-sm {{ Request::is('admin/finance') ? 'text-white bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800' }} rounded-md transition-colors">
                         <i class="fa-solid fa-circle-dot text-[6px]"></i>
                         <span class="nav-text">Iuran Warga</span>
                     </a>
-                    <a href="{{ route('admin.under_construction') }}" class="flex items-center gap-3 pl-11 pr-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-800 rounded-md transition-colors">
+                    <a href="{{ route('admin.finance.verification') }}" class="flex items-center gap-3 pl-11 pr-3 py-2 text-sm {{ Request::is('admin/finance/verification') ? 'text-white bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800' }} rounded-md transition-colors">
                         <i class="fa-solid fa-circle-dot text-[6px]"></i>
                         <span class="nav-text">Verifikasi Pembayaran</span>
                     </a>

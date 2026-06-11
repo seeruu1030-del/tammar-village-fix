@@ -11,6 +11,8 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+Route::post('/midtrans/notification', [\App\Http\Controllers\Warga\DashboardController::class, 'midtransNotification'])->name('midtrans.notification');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin', function () {
         return view('admin.dashboard');
@@ -18,6 +20,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('admin')->group(function () {
         Route::get('/residents', [\App\Http\Controllers\Admin\ResidentController::class, 'index'])->name('admin.residents.index');
+        Route::get('/residents/pending', [\App\Http\Controllers\Admin\ResidentController::class, 'pending'])->name('admin.residents.pending');
+        Route::post('/residents/{id}/approve', [\App\Http\Controllers\Admin\ResidentController::class, 'approve'])->name('admin.residents.approve');
         Route::get('/residents/non-active', [\App\Http\Controllers\Admin\ResidentController::class, 'nonActive'])->name('admin.residents.non-active');
         Route::post('/residents/register-out', [\App\Http\Controllers\Admin\ResidentController::class, 'registerOut'])->name('admin.residents.register-out');
         Route::post('/residents', [\App\Http\Controllers\Admin\ResidentController::class, 'store'])->name('admin.residents.store');
@@ -39,6 +43,10 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/family-members/{id}', [\App\Http\Controllers\Admin\FamilyMemberController::class, 'destroy'])->name('admin.family-members.destroy');
 
         Route::get('/finance', [\App\Http\Controllers\Admin\FinanceController::class, 'index'])->name('admin.finance.index');
+        Route::post('/finance/generate-mass', [\App\Http\Controllers\Admin\FinanceController::class, 'generateMassInvoices'])->name('admin.finance.generate-mass');
+        Route::get('/finance/verification', [\App\Http\Controllers\Admin\FinanceController::class, 'verification'])->name('admin.finance.verification');
+        Route::post('/finance/verification/{id}/approve', [\App\Http\Controllers\Admin\FinanceController::class, 'approve'])->name('admin.finance.approve');
+        Route::post('/finance/verification/{id}/reject', [\App\Http\Controllers\Admin\FinanceController::class, 'reject'])->name('admin.finance.reject');
 
         Route::get('/blocks', [\App\Http\Controllers\Admin\BlockController::class, 'index'])->name('admin.blocks.index');
         Route::post('/blocks', [\App\Http\Controllers\Admin\BlockController::class, 'store'])->name('admin.blocks.store');
@@ -56,6 +64,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/savings-deposits', [\App\Http\Controllers\Admin\SavingsTransactionController::class, 'index'])->name('admin.savings.deposits');
         Route::post('/savings-deposits', [\App\Http\Controllers\Admin\SavingsTransactionController::class, 'store'])->name('admin.savings.deposits.store');
+        Route::put('/savings-deposits/{id}/approve', [\App\Http\Controllers\Admin\SavingsTransactionController::class, 'approve'])->name('admin.savings.deposits.approve');
         Route::delete('/savings-deposits/{id}', [\App\Http\Controllers\Admin\SavingsTransactionController::class, 'destroy'])->name('admin.savings.deposits.destroy');
 
         Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('admin.settings.index');
@@ -76,10 +85,17 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::get('/warga', [\App\Http\Controllers\Warga\DashboardController::class, 'index'])->name('warga.dashboard');
-    Route::get('/bank', function () {
-        return view('bank.dashboard');
-    });
-    Route::get('/security', function () {
-        return view('security.dashboard');
-    });
+    Route::post('/warga/update-account', [\App\Http\Controllers\Warga\DashboardController::class, 'updateAccount'])->name('warga.update-account');
+    Route::put('/warga/profile', [\App\Http\Controllers\Warga\DashboardController::class, 'updateProfile'])->name('warga.profile.update');
+    Route::post('/warga/family', [\App\Http\Controllers\Warga\DashboardController::class, 'storeFamily'])->name('warga.family.store');
+    Route::delete('/warga/family/{id}', [\App\Http\Controllers\Warga\DashboardController::class, 'destroyFamily'])->name('warga.family.destroy');
+    Route::post('/warga/document', [\App\Http\Controllers\Warga\DashboardController::class, 'storeDocument'])->name('warga.document.store');
+    Route::delete('/warga/document/{id}', [\App\Http\Controllers\Warga\DashboardController::class, 'destroyDocument'])->name('warga.document.destroy');
+    Route::post('/warga/vehicle', [\App\Http\Controllers\Warga\DashboardController::class, 'storeVehicle'])->name('warga.vehicle.store');
+    Route::delete('/warga/vehicle/{id}', [\App\Http\Controllers\Warga\DashboardController::class, 'destroyVehicle'])->name('warga.vehicle.destroy');
+    Route::post('/warga/payment', [\App\Http\Controllers\Warga\DashboardController::class, 'submitPayment'])->name('warga.payment.submit');
+    Route::post('/warga/savings', [\App\Http\Controllers\Warga\DashboardController::class, 'submitSavingsPayment'])->name('warga.savings.submit');
+    Route::get('/warga/payment/check/{order_id}', [\App\Http\Controllers\Warga\DashboardController::class, 'checkPaymentStatus'])->name('warga.payment.check');
+    Route::get('/bank', [\App\Http\Controllers\Bank\DashboardController::class, 'index'])->name('bank.dashboard');
+    Route::get('/security', [\App\Http\Controllers\Security\DashboardController::class, 'index'])->name('security.dashboard');
 });

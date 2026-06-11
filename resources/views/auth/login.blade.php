@@ -63,14 +63,14 @@
                 </div>
                 @endif
 
-                <!-- Username / Email -->
+                <!-- Username / Email / NIK -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Username</label>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Username atau NIK</label>
                     <div class="relative group">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-sky-500 transition-colors">
                             <i class="fa-solid fa-user"></i>
                         </div>
-                        <input type="text" name="username" placeholder="admin / budi / bank" required value="{{ old('username') }}"
+                        <input type="text" name="login" placeholder="admin / 3201xxxx..." required value="{{ old('login') }}"
                             class="block w-full pl-10 pr-3 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all">
                     </div>
                 </div>

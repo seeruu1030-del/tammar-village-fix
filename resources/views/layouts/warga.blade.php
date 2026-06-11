@@ -81,7 +81,7 @@
                 <div class="overflow-hidden footer-text">
                     <p class="text-sm font-medium text-white truncate">{{ Auth::user()->name }}</p>
                     <p class="text-[10px] text-slate-500 truncate">
-                        @if(Auth::user()->resident)
+                        @if(Auth::user()->resident && Auth::user()->resident->block)
                             Blok {{ Auth::user()->resident->block->name }} / No. {{ Auth::user()->resident->unit_no }}
                         @else
                             Warga
@@ -156,7 +156,41 @@
         </header>
 
         <!-- Scrollable Content Area -->
-        <div class="flex-1 overflow-y-auto p-4 sm:p-8">
+        <div class="flex-1 overflow-y-auto p-4 sm:p-8 relative">
+            <!-- Global Success Message -->
+            @if(session('success'))
+            <div id="global-success" class="absolute top-4 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-full font-bold text-sm shadow-xl flex items-center gap-3 z-50 transition-all duration-500">
+                <i class="fa-solid fa-circle-check text-lg"></i>
+                <span>{{ session('success') }}</span>
+            </div>
+            <script>
+                setTimeout(() => {
+                    const el = document.getElementById('global-success');
+                    if(el) {
+                        el.style.opacity = '0';
+                        setTimeout(() => el.remove(), 500);
+                    }
+                }, 4000);
+            </script>
+            @endif
+
+            <!-- Global Error Message -->
+            @if($errors->any())
+            <div id="global-error" class="absolute top-4 left-1/2 -translate-x-1/2 bg-rose-600 text-white px-6 py-3 rounded-full font-bold text-sm shadow-xl flex items-center gap-3 z-50 transition-all duration-500">
+                <i class="fa-solid fa-circle-exclamation text-lg"></i>
+                <span>Terdapat {{ $errors->count() }} kesalahan form. Silakan cek kembali inputan Anda.</span>
+            </div>
+            <script>
+                setTimeout(() => {
+                    const el = document.getElementById('global-error');
+                    if(el) {
+                        el.style.opacity = '0';
+                        setTimeout(() => el.remove(), 500);
+                    }
+                }, 5000);
+            </script>
+            @endif
+
             @yield('content')
         </div> <!-- END SCROLLABLE CONTENT -->
 
@@ -171,6 +205,9 @@
     <!-- Scripts -->
     <script src="{{ asset('assets/js/navigation.js') }}"></script>
     <script src="{{ asset('assets/js/warga.js') }}"></script>
+    <!-- Midtrans Snap JS -->
+    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
+    
     @stack('scripts')
 </body>
 </html>
