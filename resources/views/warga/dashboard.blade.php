@@ -837,34 +837,55 @@
             <button onclick="closeEditProfileModal()" class="text-slate-400 hover:text-rose-500 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
         </div>
         <div class="p-6 overflow-y-auto flex-1">
-            <form id="form-edit-profil" class="space-y-4">
+            <form id="form-edit-profil" action="{{ route('warga.profile.update') }}" method="POST" class="space-y-4">
+                @csrf
+                @method('PUT')
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap</label>
-                        <input type="text" value="{{ $resident->name ?? Auth::user()->name }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap</label>
+                        <input type="text" name="name" value="{{ $resident->name ?? Auth::user()->name }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">WhatsApp</label>
-                        <input type="text" value="{{ $resident->contact ?? '' }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">NIK (16 Digit)</label>
+                        <input type="text" name="nik" value="{{ $resident->nik ?? '' }}" maxlength="16" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Email Aktif</label>
-                        <input type="email" value="{{ $resident->email ?? Auth::user()->email ?? '' }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">WhatsApp</label>
+                        <input type="text" name="contact" value="{{ $resident->contact ?? '' }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">ID Telegram</label>
-                        <input type="text" value="{{ $resident->telegram_id ?? '' }}" placeholder="@username" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Email Aktif</label>
+                        <input type="email" name="email" value="{{ $resident->email ?? Auth::user()->email ?? '' }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tempat Lahir</label>
+                        <input type="text" name="birth_place" value="{{ $resident->birth_place ?? '' }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tanggal Lahir</label>
+                        <input type="date" name="birth_date" value="{{ $resident->birth_date ? \Carbon\Carbon::parse($resident->birth_date)->format('Y-m-d') : '' }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">ID Telegram</label>
+                        <input type="text" name="telegram_id" value="{{ $resident->telegram_id ?? '' }}" placeholder="@username" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status Hunian</label>
+                        <select name="housing_status" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+                            <option value="Owner" {{ ($resident->housing_status ?? '') == 'Owner' ? 'selected' : '' }}>Pemilik (Owner)</option>
+                            <option value="Tenant" {{ ($resident->housing_status ?? '') == 'Tenant' ? 'selected' : '' }}>Penyewa (Tenant)</option>
+                        </select>
                     </div>
                 </div>
                 <div class="p-4 bg-amber-50 rounded-xl border border-amber-100 flex gap-3 mt-4">
                     <i class="fa-solid fa-circle-info text-amber-500 mt-0.5"></i>
-                    <p class="text-[11px] text-amber-800 leading-relaxed">Perubahan NIK dan No. Unit hanya dapat dilakukan oleh Admin/Pengurus melalui verifikasi dokumen resmi.</p>
+                    <p class="text-[11px] text-amber-800 leading-relaxed">Penting: Data NIK dan Status Hunian akan diverifikasi ulang oleh Admin setelah diperbarui.</p>
                 </div>
             </form>
         </div>
         <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
             <button onclick="closeEditProfileModal()" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 transition">Batal</button>
-            <button onclick="alert('Profil berhasil diperbarui!'); closeEditProfileModal();" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium shadow-md hover:bg-emerald-700 transition flex items-center gap-2">Simpan Perubahan</button>
+            <button type="submit" form="form-edit-profil" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium shadow-md hover:bg-emerald-700 transition flex items-center gap-2">Simpan Perubahan</button>
         </div>
     </div>
 </div>

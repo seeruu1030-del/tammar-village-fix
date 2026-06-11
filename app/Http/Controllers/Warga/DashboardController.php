@@ -96,16 +96,21 @@ class DashboardController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'nik' => 'required|string|max:20|unique:residents,nik,' . $resident->id,
             'contact' => 'required|string|max:50',
-            'telegram_id' => 'nullable|string|max:100',
+            'email' => 'nullable|email|max:255|unique:users,email,' . Auth::id(),
             'birth_place' => 'nullable|string|max:100',
             'birth_date' => 'nullable|date',
-            'email' => 'nullable|email|max:255',
+            'telegram_id' => 'nullable|string|max:100',
+            'housing_status' => 'required|in:Owner,Tenant',
         ]);
 
         $resident->update($validated);
         
-        $userData = ['name' => $validated['name']];
+        $userData = [
+            'name' => $validated['name'],
+            'username' => $validated['nik'], // Ensure username matches NIK
+        ];
         if (isset($validated['email'])) {
             $userData['email'] = $validated['email'];
         }
