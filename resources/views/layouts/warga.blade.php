@@ -17,6 +17,9 @@
 </head>
 <body class="bg-slate-100 font-sans text-slate-800 antialiased overflow-hidden flex h-screen">
 
+    <!-- Backdrop for Mobile -->
+    <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 z-40 hidden transition-opacity duration-300 opacity-0"></div>
+
     <!-- Sidebar (Tema Emerald untuk Warga) -->
     <aside id="warga-sidebar" class="fixed md:static inset-y-0 left-0 w-64 bg-slate-800 text-slate-300 flex flex-col transition-all duration-300 ease-in-out shadow-xl z-50 shrink-0 transform -translate-x-full md:translate-x-0">
         <!-- Logo Area -->
